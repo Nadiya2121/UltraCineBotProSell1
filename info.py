@@ -51,10 +51,10 @@ MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), True) # Type Tru
 DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://MoviaXBot5:MoviaXBot5@cluster0.1jmsdzd.mongodb.net/?appName=Cluster0")
 DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "375")) 
 
-GRP_LNK = environ.get('GRP_LNK', 'https://t.me/SilentXBotz')
-CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/SilentXBotz')
-OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/SilentXBotz')
-UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/SilentXBotz')
+GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+IcRkzNd5i0diY2Vl')
+CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/TGLinkBase')
+OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/ctgmovies23')
+UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+VNmQjZ6nlVo2MTll')
 
 AUTH_CHANNEL = environ.get("AUTH_CHANNEL", "-100") # add multiple channels here, separated by single space
 AUTH_REQ_CHANNEL = environ.get('AUTH_REQ_CHANNEL', '-100')
@@ -133,7 +133,7 @@ BAD_WORDS = [
     "predvd", "dvdscr", "hdts", "camrip", "hdcam", "hdrip", "brrip", "bdrip",
 ]
 
-LANGUAGES = ["malayalam", "", "tamil", "", "english", "", "hindi", "", "telugu", "", "kannada", "", "gujarati", "", "marathi", "", "punjabi", ""]
+LANGUAGES = ["malayalam", "", "tamil", "", "english", "", "hindi", "", "telugu", "", "kannada", "", "gujarati", "", "marathi", "", "Bengali", ""]
 QUALITIES = ["360P", "", "480P", "", "720P", "", "1080P", "", "1440P", "", "2160P", ""]
 SEASONS = ["Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6", "Season 7", "Season 8", "Season 9", "Season 10"]
 
