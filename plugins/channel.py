@@ -18,7 +18,7 @@ from database.ia_filterdb import save_file
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.enums import ParseMode
 
-# --- আপনার TMDB API Key এখানে বসান ---
+# --- TMDB API Key ---
 MY_TMDB_API_KEY = "7dc544d9253bccc3cfecc1c677f69819"
 
 CAPTION_LANGUAGES = ["Bhojpuri", "Hindi", "Bengali", "Tamil", "English", "Bangla", "Telugu", "Malayalam", "Kannada", "Marathi", "Punjabi", "Bengoli", "Gujrati", "Korean", "Gujarati", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese", "Russian", "Japanese", "Odia", "Assamese", "Urdu"]
@@ -44,35 +44,35 @@ SILENTX_PREMIUM_UPDATE = """
 <b>⚡ Powered By @TGLinkBase</b>
 """
 
-notified_movies = set()
+# notified_movies সরিয়ে ফেলা হয়েছে যাতে বারবার পোস্ট হয়
 media_filter = filters.document | filters.video | filters.audio
 media_process_lock = asyncio.Lock()
 
-# --- সরাসরি TMDB থেকে লম্বা পোস্টার এবং তথ্য আনার ফাংশন ---
 async def get_tmdb_details_local(title: str, year: str = None) -> Optional[Dict[str, Any]]:
     try:
+        # টাইটেল থেকে ডট (.) এবং হাইফেন (-) সরিয়ে ক্লিন করা হচ্ছে সার্চের সুবিধার জন্য
+        clean_title = title.replace(".", " ").replace("-", " ")
         async with aiohttp.ClientSession() as session:
-            # সার্চ করা হচ্ছে
             search_url = f"https://api.themoviedb.org/3/search/multi"
-            params = {"api_key": MY_TMDB_API_KEY, "query": title}
+            params = {"api_key": MY_TMDB_API_KEY, "query": clean_title}
             if year: params["year"] = year
 
             async with session.get(search_url, params=params) as resp:
                 if resp.status != 200: return None
                 results = await resp.json()
-                if not results.get("results"): return None
+                if not results.get("results"): 
+                    LOGGER.info(f"TMDB: No results found for {clean_title}")
+                    return None
                 
                 res = results["results"][0]
                 m_type = res.get("media_type", "movie")
                 tmdb_id = res.get("id")
 
-                # বিস্তারিত তথ্য এবং ট্রেইলার আনার জন্য
                 detail_url = f"https://api.themoviedb.org/3/{m_type}/{tmdb_id}"
                 async with session.get(detail_url, params={"api_key": MY_TMDB_API_KEY, "append_to_response": "videos,credits"}) as det_resp:
                     if det_resp.status != 200: return None
                     full_data = await det_resp.json()
 
-                # ডিরেক্টর বের করার লজিক
                 director = "N/A"
                 if m_type == "movie":
                     for crew in full_data.get("credits", {}).get("crew", []):
@@ -83,7 +83,6 @@ async def get_tmdb_details_local(title: str, year: str = None) -> Optional[Dict[
                     if full_data.get("created_by"):
                         director = full_data["created_by"][0]["name"]
 
-                # লম্বা পোস্টার লিঙ্ক (Portrait)
                 poster_path = full_data.get("poster_path")
                 poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else DEFAULT_IMAGE_URL
 
@@ -96,7 +95,7 @@ async def get_tmdb_details_local(title: str, year: str = None) -> Optional[Dict[
                     "vote_count": f"{full_data.get('vote_count', 0):,}",
                     "genres": [g["name"] for g in full_data.get("genres", [])],
                     "poster_url": poster_url,
-                    "videos": [{"url": f"https://www.youtube.com/watch?v={v['key']}"} for v in full_data.get("videos", {}).get("results", []) if v['site'] == 'YouTube']
+                    "videos": [{"url": f"https://youtube.com/watch?v={v['key']}"} for v in full_data.get("videos", {}).get("results", []) if v['site'] == 'YouTube']
                 }
     except Exception as e:
         LOGGER.error(f"TMDB Local Fetch Error: {e}")
@@ -117,7 +116,8 @@ async def media(bot, message):
     async with media_process_lock:
         try:
             success, silentxbotz = await save_file(media)
-            if success and silentxbotz == 1 and await get_status(bot.me.id):            
+            # এখানে silentxbotz == 1 শর্তটি সরিয়ে দেওয়া হয়েছে
+            if success and await get_status(bot.me.id):            
                 await send_movie_update(bot, file_name=media.file_name, caption=media.caption)
                 
         except Exception as e:
@@ -125,20 +125,19 @@ async def media(bot, message):
 
 async def send_movie_update(bot, file_name, caption):
     try:
-        file_name = clean_filename(file_name)
-        caption = clean_filename(caption)
+        clean_name = clean_filename(file_name)
         
-        year_match = re.search(r"\b(19|20)\d{2}\b", caption)
+        year_match = re.search(r"\b(19|20)\d{2}\b", caption or file_name)
         year = year_match.group(0) if year_match else None      
         
-        language = await get_languages(caption) or "Multi-Audio"      
+        language = await get_languages(caption or file_name)
         
-        # এখানে বাইরের fetch_tmdb_data এর বদলে এই ফাইলের নিজস্ব ফাংশন ব্যবহার করা হয়েছে
-        tmdb_data = await get_tmdb_details_local(file_name, year)
-        if not tmdb_data: return 
-
-        if tmdb_data["title"] in notified_movies: return 
-        notified_movies.add(tmdb_data["title"])      
+        tmdb_data = await get_tmdb_details_local(clean_name, year)
+        
+        # যদি TMDB-তে ডাটা না পাওয়া যায়, তবুও পোস্ট করার ব্যবস্থা (ঐচ্ছিক)
+        if not tmdb_data: 
+            LOGGER.info(f"Skipping update for {clean_name} as no TMDB data found.")
+            return 
 
         search_movie = tmdb_data["title"].replace(" ", "-")
         
@@ -168,7 +167,6 @@ def get_trailer_button(tmdb_data: Dict) -> list:
     
 async def send_with_visual(bot, caption: str, tmdb_data: Dict, search_movie):
     try:
-        # এখানে সরাসরি আমাদের পাওয়া লম্বা পোস্টার URL ব্যবহার করা হচ্ছে
         visual_url = tmdb_data.get("poster_url")
         get_file = f'https://telegram.me/{temp.U_NAME}?start=getfile-{search_movie}'
         
@@ -188,13 +186,5 @@ async def send_with_visual(bot, caption: str, tmdb_data: Dict, search_movie):
         LOGGER.error(f"Visual Send Error: {e}")
 
 async def get_languages(text: str) -> str:
-    found_langs = [lang for lang in CAPTION_LANGUAGES if lang.lower().replace(" ", "") in text.lower().replace(" ", "")]
+    found_langs = [lang for lang in CAPTION_LANGUAGES if lang.lower() in text.lower()]
     return ", ".join(found_langs[:2]) if found_langs else "Multi-Audio"
-
-async def get_qualities(text): 
-    qualities = ["ORG", "hdcam", "HDRip", "WEB-DL", "DVDrip", "HDTC"]
-    return ", ".join([q for q in qualities if q.lower() in text.lower()])
-
-async def get_pixels(caption):
-    pixels = ["480p", "720p", "1080p", "2160p", "4K"]
-    return ", ".join([p for p in pixels if p.lower() in caption.lower()])
