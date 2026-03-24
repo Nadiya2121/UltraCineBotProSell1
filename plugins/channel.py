@@ -19,7 +19,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.enums import ParseMode
 
 # --- আপনার TMDB API Key এখানে বসান ---
-MY_TMDB_API_KEY = "আপনার_টিএমডিবি_এপিআই_কি_এখানে_দিন"
+MY_TMDB_API_KEY = "7dc544d9253bccc3cfecc1c677f69819"
 
 CAPTION_LANGUAGES = ["Bhojpuri", "Hindi", "Bengali", "Tamil", "English", "Bangla", "Telugu", "Malayalam", "Kannada", "Marathi", "Punjabi", "Bengoli", "Gujrati", "Korean", "Gujarati", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese", "Russian", "Japanese", "Odia", "Assamese", "Urdu"]
 
