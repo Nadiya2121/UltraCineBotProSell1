@@ -37,7 +37,7 @@ MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1003758118658')
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1003892421187')) 
 auth_grp = environ.get('AUTH_GROUP')
 AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None
-reqst_channel = environ.get('REQST_CHANNEL_ID', '-1003695201730') 
+reqst_channel = environ.get('REQST_CHANNEL_ID', '-1003786775251') 
 REQST_CHANNEL = int(reqst_channel) if reqst_channel and id_pattern.search(reqst_channel) else None
 support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1003742535868') 
 SUPPORT_CHAT_ID = int(support_chat_id) if support_chat_id and id_pattern.search(support_chat_id) else None
@@ -51,10 +51,10 @@ MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), True) # Type Tru
 DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://MoviaXBot5:MoviaXBot5@cluster0.1jmsdzd.mongodb.net/?appName=Cluster0")
 DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "375")) 
 
-GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+IcRkzNd5i0diY2Vl')
-CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/TGLinkBase')
-OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/ctgmovies23')
-UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+VNmQjZ6nlVo2MTll')
+GRP_LNK = environ.get('GRP_LNK', 'https://t.me/MovieUpGroup')
+CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/MovieWorld303')
+OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/apple_tuhin_11')
+UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/+HmrSKKzRMmhhOWQ9')
 
 AUTH_CHANNEL = environ.get("AUTH_CHANNEL", "-100") # add multiple channels here, separated by single space
 AUTH_REQ_CHANNEL = environ.get('AUTH_REQ_CHANNEL', '-100')
