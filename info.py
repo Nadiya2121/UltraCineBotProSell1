@@ -15,14 +15,14 @@ def is_enabled(value, default):
 
 
 SESSION = environ.get('SESSION', 'media_search')
-API_ID = int(environ.get('API_ID', '19234664'))
-API_HASH = environ.get('API_HASH', '29c2f3b3d115cf1b0231d816deb271f5')
-BOT_TOKEN = environ.get('BOT_TOKEN', "8316563837:AAGi4y5VazYaqHs-XCIfCOnjpK1XMMibsSE")
+API_ID = int(environ.get('API_ID', '32521363'))
+API_HASH = environ.get('API_HASH', '804a438ca966de00ffd3d934f9790306')
+BOT_TOKEN = environ.get('BOT_TOKEN', "8659899064:AAFxM-jfk0GvXCMM12xfJgu8d3eNmAm4byY")
 
 CACHE_TIME = int(environ.get('CACHE_TIME', 300))
 USE_CAPTION_FILTER = bool(environ.get('USE_CAPTION_FILTER', True))
 
-PICS = (environ.get('PICS', 'https://i.ibb.co/1G8sh476/photo-2026-03-23-18-31-11-7620520427017732116.jpg')).split() 
+PICS = (environ.get('PICS', 'https://i.ibb.co/24dmL8x/photo-2026-04-03-13-16-02-7624521206233825284.jpg')).split() 
 NOR_IMG = environ.get("NOR_IMG", "https://graph.org/file/62efbcc4e7580b76530ba.jpg")
 MELCOW_VID = environ.get("MELCOW_VID", "https://graph.org/file/e215d12bfd4fa2155e90e.mp4")
 SPELL_IMG = environ.get("SPELL_IMG", "https://graph.org/file/13702ae26fb05df52667c.jpg")
